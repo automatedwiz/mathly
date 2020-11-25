@@ -1,98 +1,27 @@
+
 version: 0.2
-
-run-as: Linux-user-name
-
-env:
-  shell: shell-tag
-  variables:
-    key: "value"
-    key: "value"
-  parameter-store:
-    key: "value"
-    key: "value"
-  exported-variables:
-    - variable
-    - variable
-  secrets-manager:
-    key: secret-id:json-key:version-stage:version-id
-  git-credential-helper: no | yes
-
-proxy:
-  upload-artifacts: no | yes
-  logs: no | yes
-
-batch:
-  fast-fail: false | true
-  # build-list:
-  # build-matrix:
-  # build-graph:
 
 phases:
   install:
-    run-as: Linux-user-name
-    runtime-versions:
-      runtime: version
-      runtime: version
     commands:
-      - command
-      - command
-    finally:
-      - command
-      - command
+      - echo Installing Node 12...
+      - curl -sL https://deb.nodesource.com/setup_14.x | bash -
+      - apt-get install -y nodejs
+      - echo Installing Yarn...
+      - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+      - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+      - apt-get install --no-install-recommends yarn
   pre_build:
-    run-as: Linux-user-name
     commands:
-      - command
-      - command
-    finally:
-      - command
-      - command
+      - echo Installing dependencies...
+      - yarn
+      - yarn add @material-ui/core
   build:
-    run-as: Linux-user-name
     commands:
-      - command
-      - command
-    finally:
-      - command
-      - command
-  post_build:
-    run-as: Linux-user-name
-    commands:
-      - command
-      - command
-    finally:
-      - command
-      - command
-reports:
-  report-group-name-or-arn:
-    files:
-      - location
-      - location
-    base-directory: location
-    discard-paths: no | yes
-    file-format: report-format
+      - echo Building...
+      - yarn build
 artifacts:
   files:
-    - location
-    - location
-  name: artifact-name
-  discard-paths: no | yes
-  base-directory: location
-  secondary-artifacts:
-    artifactIdentifier:
-      files:
-        - location
-        - location
-      name: secondary-artifact-name
-      discard-paths: no | yes
-      base-directory: location
-    artifactIdentifier:
-      files:
-        - location
-        - location
-      discard-paths: no | yes
-      base-directory: location
-cache:
-  paths:
-    - path
-    - path
+    - "**/*"
+  discard-paths: no
+  base-directory: build
